@@ -62,7 +62,16 @@ Module LoanBalancing
                       "  and h.loan_holdings_id = b.lh_id
                         and h.isactive = 0 
                         group by h.loan_holdings_id,  h.rate,  h.num_units
-                        order by  h.loan_holdings_id"
+                      
+
+                    union all
+                    Select  h.loan_holdings_id, h.rate, h.num_units, sum(b.num_units) as sumbalance
+                    From loan_holdings h, lh_balances_suspense b
+                    Where  h.loanid = " & loanid &
+                      "  and h.loan_holdings_id = b.lh_id
+                        and h.isactive = 0 
+                        group by h.loan_holdings_id,  h.rate,  h.num_units"
+
 
 
             dsHoldings = New DataSet
@@ -183,7 +192,7 @@ Module LoanBalancing
                 </head>
                 <table>
                   <tr>
-                    <th style='font-size:30px' colspan=6>Loan Balances Report - erros encountered</th>
+                    <th style='font-size:30px' colspan=6>Loan Balances Report - discrepancies encountered</th>
                    
                   </tr>
                   <tr>
